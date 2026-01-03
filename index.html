@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3568 Sayılı Kanun - Cevap Yazısı Oluşturucu</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -20,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -75,34 +74,33 @@
             font-size: 16px;
         }
 
-        .file-upload {
-            border: 2px dashed #667eea;
+        .text-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #667eea;
             border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
             transition: all 0.3s;
-            margin-bottom: 15px;
         }
 
-        .file-upload:hover {
-            background: #f8f9ff;
+        .text-input:focus {
+            outline: none;
             border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .file-upload input {
-            display: none;
+        .text-input::placeholder {
+            color: #999;
         }
 
-        .file-upload label {
-            cursor: pointer;
-            display: block;
-        }
-
-        .file-name {
-            margin-top: 10px;
-            color: #28a745;
-            font-weight: bold;
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
         }
 
         .btn {
@@ -157,6 +155,18 @@
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .alert-error {
@@ -265,6 +275,13 @@
             border: none;
             border-top: 1px solid #000;
         }
+
+        .char-counter {
+            text-align: right;
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -280,54 +297,57 @@
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">1</span>
-                    Bilgi İsteme Dosyası
+                    Bilgi İsteme Dosyası İçeriği
                 </div>
-                <div class="file-upload" onclick="document.getElementById('file1').click()">
-                    <input type="file" id="file1" accept=".docx" onchange="handleFileSelect(1, this)">
-                    <label for="file1">
-                        📁 DOCX Dosya Seçin veya Sürükleyin
-                        <div class="file-name" id="fileName1"></div>
-                    </label>
-                </div>
+                <textarea 
+                    class="text-input" 
+                    id="text1" 
+                    placeholder="bilgi_isteme.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
+                    oninput="checkAllInputs(); updateCounter(1)"></textarea>
+                <div class="char-counter" id="counter1">0 karakter</div>
+                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A (Tümünü Seç) → Ctrl+C (Kopyala) → Buraya Ctrl+V (Yapıştır)</div>
             </div>
 
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">2</span>
-                    Firma Bilgileri Dosyası
+                    Firma Bilgileri Dosyası İçeriği
                 </div>
-                <div class="file-upload" onclick="document.getElementById('file2').click()">
-                    <input type="file" id="file2" accept=".docx" onchange="handleFileSelect(2, this)">
-                    <label for="file2">
-                        📁 DOCX Dosya Seçin veya Sürükleyin
-                        <div class="file-name" id="fileName2"></div>
-                    </label>
-                </div>
+                <textarea 
+                    class="text-input" 
+                    id="text2" 
+                    placeholder="firma_bilgileri.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
+                    oninput="checkAllInputs(); updateCounter(2)"></textarea>
+                <div class="char-counter" id="counter2">0 karakter</div>
+                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A → Ctrl+C → Buraya Ctrl+V</div>
             </div>
 
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">3</span>
-                    YMM Bilgileri Dosyası
+                    YMM Bilgileri Dosyası İçeriği
                 </div>
-                <div class="file-upload" onclick="document.getElementById('file3').click()">
-                    <input type="file" id="file3" accept=".docx" onchange="handleFileSelect(3, this)">
-                    <label for="file3">
-                        📁 DOCX Dosya Seçin veya Sürükleyin
-                        <div class="file-name" id="fileName3"></div>
-                    </label>
-                </div>
+                <textarea 
+                    class="text-input" 
+                    id="text3" 
+                    placeholder="ymm_bilgileri.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
+                    oninput="checkAllInputs(); updateCounter(3)"></textarea>
+                <div class="char-counter" id="counter3">0 karakter</div>
+                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A → Ctrl+C → Buraya Ctrl+V</div>
             </div>
 
             <div class="step">
                 <button class="btn" id="generateBtn" onclick="generateDocument()" disabled>
                     ✨ Cevap Yazısı Oluştur
                 </button>
+                <button class="btn" onclick="clearAll()" style="background: #dc3545;">
+                    🗑️ Temizle
+                </button>
             </div>
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Dosyalar okunuyor ve cevap yazısı oluşturuluyor...</p>
+                <p>Cevap yazısı oluşturuluyor...</p>
             </div>
 
             <div class="preview" id="preview">
@@ -343,41 +363,37 @@
 
         <div class="footer">
             <p>© 2026 - 3568 Sayılı Kanun Bilgi Cevap Yazısı Otomasyonu</p>
-            <p style="margin-top: 5px; font-size: 12px;">Tüm dosyalar tarayıcınızda işlenir, hiçbir veri sunucuya gönderilmez.</p>
+            <p style="margin-top: 5px; font-size: 12px;">Tüm veriler tarayıcınızda işlenir, hiçbir bilgi sunucuya gönderilmez.</p>
         </div>
     </div>
 
     <script>
-        let fileContents = {
-            file1: null,
-            file2: null,
-            file3: null
-        };
-
-        async function handleFileSelect(fileNum, input) {
-            const file = input.files[0];
-            if (file) {
-                try {
-                    showAlert('Dosya okunuyor: ' + file.name, 'info');
-                    
-                    const arrayBuffer = await file.arrayBuffer();
-                    const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
-                    
-                    fileContents['file' + fileNum] = result.value;
-                    document.getElementById('fileName' + fileNum).textContent = '✓ ' + file.name;
-                    
-                    showAlert('Dosya başarıyla okundu: ' + file.name, 'success');
-                    checkAllFiles();
-                } catch (error) {
-                    showAlert('Dosya okuma hatası: ' + error.message, 'error');
-                    console.error('Error reading file:', error);
-                }
-            }
+        function updateCounter(num) {
+            const text = document.getElementById('text' + num).value;
+            document.getElementById('counter' + num).textContent = text.length + ' karakter';
         }
 
-        function checkAllFiles() {
-            const allUploaded = fileContents.file1 && fileContents.file2 && fileContents.file3;
-            document.getElementById('generateBtn').disabled = !allUploaded;
+        function checkAllInputs() {
+            const text1 = document.getElementById('text1').value.trim();
+            const text2 = document.getElementById('text2').value.trim();
+            const text3 = document.getElementById('text3').value.trim();
+            
+            const allFilled = text1.length > 50 && text2.length > 50 && text3.length > 50;
+            document.getElementById('generateBtn').disabled = !allFilled;
+        }
+
+        function clearAll() {
+            if (confirm('Tüm girilen veriler silinecek. Emin misiniz?')) {
+                document.getElementById('text1').value = '';
+                document.getElementById('text2').value = '';
+                document.getElementById('text3').value = '';
+                updateCounter(1);
+                updateCounter(2);
+                updateCounter(3);
+                checkAllInputs();
+                document.getElementById('preview').classList.remove('active');
+                showAlert('Tüm veriler temizlendi.', 'info');
+            }
         }
 
         function showAlert(message, type = 'info') {
@@ -411,33 +427,96 @@
             }
         }
 
+        function parseValue(text, pattern, defaultValue = '[Bulunamadı]') {
+            const match = text.match(pattern);
+            return match ? match[1].trim() : defaultValue;
+        }
+
+        function parseFatura(text) {
+            // Fatura tablosunu bul
+            const faturaRegex = /(\d{2}\.\d{2}\.\d{4})\s+(\w+\d+)\s+(\w+)\s+([\d,.]+)\s+([\d,.]+)/g;
+            const faturalar = [];
+            let match;
+            
+            while ((match = faturaRegex.exec(text)) !== null) {
+                faturalar.push({
+                    tarih: match[1],
+                    no: match[2],
+                    cinsi: match[3],
+                    matrah: match[4],
+                    kdv: match[5]
+                });
+            }
+            
+            return faturalar;
+        }
+
         function generateHTMLContent() {
+            const bilgiIsteme = document.getElementById('text1').value;
+            const firmaBilgi = document.getElementById('text2').value;
+            const ymmBilgi = document.getElementById('text3').value;
+            
             const today = new Date();
             const dateStr = today.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
             
-            // Parse bilgi isteme dosyası
-            const bilgiIsteme = fileContents.file1 || '';
-            const ymmBilgi = fileContents.file3 || '';
-            const firmaBilgi = fileContents.file2 || '';
+            // Fatura bilgilerini parse et
+            const faturalar = parseFatura(bilgiIsteme);
             
-            // Basit parse işlemleri
-            const parseValue = (text, pattern) => {
-                const match = text.match(pattern);
-                return match ? match[1].trim() : '[Bulunamadı]';
-            };
+            let faturaHTML = '';
+            let toplamMatrah = 0;
+            let toplamKDV = 0;
+            
+            if (faturalar.length > 0) {
+                faturalar.forEach(f => {
+                    const matrah = parseFloat(f.matrah.replace(/\./g, '').replace(',', '.'));
+                    const kdv = parseFloat(f.kdv.replace(/\./g, '').replace(',', '.'));
+                    toplamMatrah += matrah;
+                    toplamKDV += kdv;
+                    
+                    faturaHTML += `
+                        <tr>
+                            <td>${f.tarih}</td>
+                            <td>${f.no}</td>
+                            <td>${f.cinsi}</td>
+                            <td style="text-align: right;">${f.matrah}</td>
+                            <td style="text-align: right;">${f.kdv}</td>
+                            <td>[Muavin kaydından alınacak]</td>
+                        </tr>
+                    `;
+                });
+                
+                faturaHTML += `
+                    <tr>
+                        <td colspan="3"><strong>TOPLAM</strong></td>
+                        <td style="text-align: right;"><strong>${toplamMatrah.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
+                        <td style="text-align: right;"><strong>${toplamKDV.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
+                        <td style="text-align: right;"><strong>${(toplamMatrah + toplamKDV).toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
+                    </tr>
+                `;
+            } else {
+                faturaHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Fatura bilgisi bulunamadı</td></tr>';
+            }
 
             return `
                 <h1>3568 SAYILI KANUN BİLGİ CEVAP YAZISI</h1>
                 
                 <p><strong>Tarih:</strong> ${dateStr}, İSTANBUL</p>
                 <p><strong>Sayı:</strong> MU-2694/2026-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}</p>
-                <p><strong>İlgi:</strong> Bilgi talep yazınız</p>
+                <p><strong>İlgi:</strong> ${parseValue(bilgiIsteme, /Sayi\s*[:：]\s*(.+)/i, 'Bilgi talep yazınız')}</p>
                 <p><strong>Konu:</strong> Bilgi Cevap Verme Yazısı</p>
                 
                 <hr>
                 
+                <p><strong>SAYIN</strong></p>
+                <p><strong>${parseValue(bilgiIsteme, /Adi Soyadi\s*[:：]\s*(.+)/i)}</strong></p>
+                <p><strong>Yeminli Mali Müşavir</strong></p>
+                
+                <hr>
+                
                 <p style="margin: 15px 0; text-align: justify;">
-                    3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde bilgi cevap yazısı oluşturulmuştur.
+                    3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde 2024 yılı Tam Tasdik işlemi tarafımızdan yapılan 
+                    ${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i, 'Medicana İnşaat Mat. Tek. Tur. Gıda Eği. Ve Sağ. Hiz. Ene. San. Ve Tic. A.Ş.')}'nin 
+                    bilgi cevap yazısı aşağıdaki şekilde sunulmuştur.
                 </p>
                 
                 <hr>
@@ -454,16 +533,6 @@
                     <tr><td>Vergi Dairesi ve No</td><td>${parseValue(bilgiIsteme, /Vergi Dairesi ve No\s*[:：]\s*(.+)/i)}</td></tr>
                 </table>
                 
-                <h3>2. Bilgi İsteyen YMM'nin Mükellefi:</h3>
-                <table>
-                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
-                    <tr><td>Ünvanı</td><td>${parseValue(bilgiIsteme, /Adi Soyadi\/Ünvani\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Adresi</td><td>${parseValue(bilgiIsteme, /Adresi\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(bilgiIsteme, /ATISALANI|Atisalani.*\d{3}\s\d{3}\s\d{4}/i)}</td></tr>
-                </table>
-                
-                <hr>
-                
                 <h2>B- TEYİT VEREN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİN BİLGİLERİ</h2>
                 
                 <h3>1. Bilgi Veren Yeminli Mali Müşavirin Bilgileri:</h3>
@@ -473,23 +542,20 @@
                     <tr><td>Bağlı Olduğu Oda</td><td>${parseValue(ymmBilgi, /Bağlı Olduğu Oda\s*[:：]\s*(.+)/i)}</td></tr>
                     <tr><td>Sicil No</td><td>${parseValue(ymmBilgi, /Sicil No\s*[:：]\s*(.+)/i)}</td></tr>
                     <tr><td>Mühür No</td><td>${parseValue(ymmBilgi, /Mühür No\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(ymmBilgi, /Vergi Dairesi ve No\.?su\s*[:：]\s*(.+)/i)}</td></tr>
                 </table>
                 
                 <h3>6. BİLGİ YAZISINA KONU BELGELER:</h3>
-                <p>Bilgi yazısına konu faturalar:</p>
                 <table>
                     <tr>
-                        <th>Fatura Tarihi</th>
-                        <th>Fatura No</th>
-                        <th>Cinsi</th>
-                        <th>Matrah (TL)</th>
-                        <th>KDV (TL)</th>
+                        <th style="width: 12%;">Fatura Tarihi</th>
+                        <th style="width: 22%;">Fatura No</th>
+                        <th style="width: 12%;">Cinsi</th>
+                        <th style="width: 15%;">Matrah (TL)</th>
+                        <th style="width: 13%;">KDV (TL)</th>
+                        <th style="width: 26%;">Yevmiye/Fiş No</th>
                     </tr>
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px;">
-                            Dosyalardan otomatik çekilecek
-                        </td>
-                    </tr>
+                    ${faturaHTML}
                 </table>
                 
                 <hr>
@@ -497,7 +563,8 @@
                 <h2>SONUÇ:</h2>
                 <p style="text-align: justify;">
                     3568 Sayılı Yeminli Mali Müşavirlik Kanunu ve ilgili tebliğler çerçevesinde tarafınıza sunulan bilgiler, 
-                    mükellefimiz kayıtlarına ve belgelerine dayanmaktadır.
+                    mükellefimiz kayıtlarına ve belgelerine dayanmaktadır. Söz konusu faturalarda yer alan mal veya hizmetlerin 
+                    alışı ve satışı gerçeği yansıtmakta olup, KDV matrahına dahil edilmiş ve yasal defterlere kaydedilmiştir.
                 </p>
                 
                 <p style="margin-top: 30px; text-align: right;">
