@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3568 Sayılı Kanun - Cevap Yazısı Oluşturucu</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -26,32 +20,51 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #ddd;
         }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
         }
-
-        .content {
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
             padding: 40px;
         }
-
-        .step {
-            margin-bottom: 30px;
+        .tab-content.active {
+            display: block;
         }
-
+        
+        .content { padding: 0; }
+        .step { margin-bottom: 30px; }
         .step-title {
             font-size: 18px;
             font-weight: bold;
@@ -60,7 +73,6 @@
             display: flex;
             align-items: center;
         }
-
         .step-number {
             background: #667eea;
             color: white;
@@ -73,7 +85,6 @@
             margin-right: 10px;
             font-size: 16px;
         }
-
         .text-input {
             width: 100%;
             min-height: 150px;
@@ -85,24 +96,17 @@
             resize: vertical;
             transition: all 0.3s;
         }
-
         .text-input:focus {
             outline: none;
             border-color: #764ba2;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-
-        .text-input::placeholder {
-            color: #999;
-        }
-
         .help-text {
             font-size: 12px;
             color: #666;
             margin-top: 5px;
             font-style: italic;
         }
-
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -116,26 +120,18 @@
             margin-right: 10px;
             margin-top: 10px;
         }
-
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
-
         .btn:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
         }
-
-        .btn-secondary {
-            background: #28a745;
-        }
-
-        .btn-secondary:hover {
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
-        }
-
+        .btn-secondary { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        
         .preview {
             display: none;
             margin-top: 30px;
@@ -146,57 +142,21 @@
             max-height: 600px;
             overflow-y: auto;
         }
-
-        .preview.active {
-            display: block;
-        }
-
+        .preview.active { display: block; }
         .alert {
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
         .loading {
             display: none;
             text-align: center;
             padding: 20px;
         }
-
-        .loading.active {
-            display: block;
-        }
-
+        .loading.active { display: block; }
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
@@ -206,12 +166,10 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 10px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
         .footer {
             background: #f8f9fa;
             padding: 20px;
@@ -219,7 +177,27 @@
             color: #666;
             font-size: 14px;
         }
-
+        
+        .prompt-display {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        
+        .prompt-display h2 {
+            color: #667eea;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
         #resultContent {
             font-family: 'Times New Roman', Times, serif;
             font-size: 9pt;
@@ -227,7 +205,6 @@
             max-width: 17cm;
             margin: 0 auto;
         }
-
         #resultContent table {
             width: 100%;
             border-collapse: collapse;
@@ -235,47 +212,39 @@
             font-size: 7.5pt;
             table-layout: fixed;
         }
-
         #resultContent table, #resultContent th, #resultContent td {
             border: 1px solid #000;
         }
-
         #resultContent th {
             background-color: #f0f0f0;
             font-weight: bold;
             padding: 3px;
             word-wrap: break-word;
         }
-
         #resultContent td {
             padding: 3px;
             word-wrap: break-word;
         }
-
         #resultContent h1 {
             font-size: 11pt;
             text-align: center;
             margin: 20px 0;
         }
-
         #resultContent h2 {
             font-size: 9pt;
             font-weight: bold;
             margin-top: 15px;
         }
-
         #resultContent h3 {
             font-size: 9pt;
             font-weight: bold;
             margin-top: 10px;
         }
-
         #resultContent hr {
             margin: 15px 0;
             border: none;
             border-top: 1px solid #000;
         }
-
         .char-counter {
             text-align: right;
             font-size: 11px;
@@ -288,89 +257,214 @@
     <div class="container">
         <div class="header">
             <h1>📄 3568 Sayılı Kanun - Cevap Yazısı Oluşturucu</h1>
-            <p>Otomatik bilgi cevap yazısı oluşturma sistemi</p>
+            <p>PROMPT Tabanlı Otomatik Sistem</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('usage')">📝 Kullanım</button>
+            <button class="tab" onclick="switchTab('prompt')">⚙️ PROMPT</button>
         </div>
 
         <div class="content">
-            <div id="alerts"></div>
+            <!-- KULLANIM SEKMES İ -->
+            <div id="tab-usage" class="tab-content active">
+                <div id="alerts"></div>
 
-            <div class="step">
-                <div class="step-title">
-                    <span class="step-number">1</span>
-                    Bilgi İsteme Dosyası İçeriği
+                <div class="step">
+                    <div class="step-title">
+                        <span class="step-number">1</span>
+                        Bilgi İsteme Dosyası (bilgi_isteme.docx)
+                    </div>
+                    <textarea 
+                        class="text-input" 
+                        id="text1" 
+                        placeholder="Word'de dosyayı açın → Cmd+A (Tümünü Seç) → Cmd+C (Kopyala) → Buraya Cmd+V (Yapıştır)"
+                        oninput="checkAllInputs(); updateCounter(1)"></textarea>
+                    <div class="char-counter" id="counter1">0 karakter</div>
                 </div>
-                <textarea 
-                    class="text-input" 
-                    id="text1" 
-                    placeholder="bilgi_isteme.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
-                    oninput="checkAllInputs(); updateCounter(1)"></textarea>
-                <div class="char-counter" id="counter1">0 karakter</div>
-                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A (Tümünü Seç) → Ctrl+C (Kopyala) → Buraya Ctrl+V (Yapıştır)</div>
-            </div>
 
-            <div class="step">
-                <div class="step-title">
-                    <span class="step-number">2</span>
-                    Firma Bilgileri Dosyası İçeriği
+                <div class="step">
+                    <div class="step-title">
+                        <span class="step-number">2</span>
+                        Firma Bilgileri Dosyası (firma_bilgileri.docx)
+                    </div>
+                    <textarea 
+                        class="text-input" 
+                        id="text2" 
+                        placeholder="Word'de dosyayı açın → Cmd+A → Cmd+C → Buraya Cmd+V"
+                        oninput="checkAllInputs(); updateCounter(2)"
+                        style="min-height: 200px;"></textarea>
+                    <div class="char-counter" id="counter2">0 karakter</div>
                 </div>
-                <textarea 
-                    class="text-input" 
-                    id="text2" 
-                    placeholder="firma_bilgileri.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
-                    oninput="checkAllInputs(); updateCounter(2)"></textarea>
-                <div class="char-counter" id="counter2">0 karakter</div>
-                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A → Ctrl+C → Buraya Ctrl+V</div>
-            </div>
 
-            <div class="step">
-                <div class="step-title">
-                    <span class="step-number">3</span>
-                    YMM Bilgileri Dosyası İçeriği
+                <div class="step">
+                    <div class="step-title">
+                        <span class="step-number">3</span>
+                        YMM Bilgileri Dosyası (ymm_bilgileri.docx)
+                    </div>
+                    <textarea 
+                        class="text-input" 
+                        id="text3" 
+                        placeholder="Word'de dosyayı açın → Cmd+A → Cmd+C → Buraya Cmd+V"
+                        oninput="checkAllInputs(); updateCounter(3)"></textarea>
+                    <div class="char-counter" id="counter3">0 karakter</div>
                 </div>
-                <textarea 
-                    class="text-input" 
-                    id="text3" 
-                    placeholder="ymm_bilgileri.docx dosyasını açın, içindeki tüm metni kopyalayıp buraya yapıştırın..."
-                    oninput="checkAllInputs(); updateCounter(3)"></textarea>
-                <div class="char-counter" id="counter3">0 karakter</div>
-                <div class="help-text">💡 Dosyayı Word'de açın → Ctrl+A → Ctrl+C → Buraya Ctrl+V</div>
-            </div>
 
-            <div class="step">
-                <button class="btn" id="generateBtn" onclick="generateDocument()" disabled>
-                    ✨ Cevap Yazısı Oluştur
-                </button>
-                <button class="btn" onclick="clearAll()" style="background: #dc3545;">
-                    🗑️ Temizle
-                </button>
-            </div>
-
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Cevap yazısı oluşturuluyor...</p>
-            </div>
-
-            <div class="preview" id="preview">
-                <h3 style="margin-bottom: 20px; color: #667eea;">📋 Önizleme</h3>
-                <div id="resultContent"></div>
-                <div style="margin-top: 20px;">
-                    <button class="btn" onclick="copyToWord()">📋 Word'e Kopyala</button>
-                    <button class="btn btn-secondary" onclick="downloadHTML()">💾 HTML İndir</button>
-                    <button class="btn" onclick="printDocument()">🖨️ Yazdır</button>
+                <div class="step">
+                    <button class="btn" id="generateBtn" onclick="sendToClaudeAPI()" disabled>
+                        🤖 CLAUDE AI ile Cevap Yazısı Oluştur
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAll()">
+                        🗑️ Temizle
+                    </button>
                 </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Claude AI cevap yazısını oluşturuyor (PROMPT'a göre)...</p>
+                </div>
+
+                <div class="preview" id="preview">
+                    <h3 style="margin-bottom: 20px; color: #667eea;">📋 Önizleme</h3>
+                    <div id="resultContent"></div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn" onclick="copyToWord()">📋 Word'e Kopyala</button>
+                        <button class="btn btn-secondary" onclick="downloadHTML()">💾 HTML İndir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROMPT SEKMESİ -->
+            <div id="tab-prompt" class="tab-content">
+                <h2 style="color: #667eea; margin-bottom: 20px;">⚙️ Kullanılan PROMPT</h2>
+                <p style="margin-bottom: 20px; color: #666;">
+                    Bu uygulama aşağıdaki promptu kullanarak Claude AI'dan cevap yazısı oluşturur:
+                </p>
+                <div class="prompt-display" id="promptDisplay"></div>
             </div>
         </div>
 
         <div class="footer">
-            <p>© 2026 - 3568 Sayılı Kanun Bilgi Cevap Yazısı Otomasyonu</p>
-            <p style="margin-top: 5px; font-size: 12px;">Tüm veriler tarayıcınızda işlenir, hiçbir bilgi sunucuya gönderilmez.</p>
+            <p>© 2026 - Claude AI Tabanlı 3568 Sayılı Kanun Otomasyonu</p>
+            <p style="margin-top: 5px; font-size: 12px;">Tüm işlemler tarayıcınızda yapılır, verileriniz güvende.</p>
         </div>
     </div>
 
     <script>
+        // PROMPT İÇERİĞİ
+        const FULL_PROMPT = `3568 Sayılı Kanun uyarınca Bilgi Cevap Yazısı oluştur.
+
+Aşağıdaki 3 dosya içeriği sana verildi:
+1. bilgi_isteme.docx - Bilgi talep eden YMM'nin yazısı
+2. firma_bilgileri.docx - Bilgi verilecek firma hakkında detaylı bilgiler  
+3. ymm_bilgileri.docx - Bilgi veren YMM'nin bilgileri
+
+**GÖREV ADIMLARI:**
+
+**ADIM 1 - FATURA ANALİZİ:**
+- bilgi_isteme.docx dosyasındaki FATURA tablosunu incele
+- Tarih, Fatura No, Matrah ve KDV bilgilerini not al
+- Bu faturaların hangi aylara ait olduğunu tespit et
+
+**ADIM 2 - DÖNEM BELİRLEME:**
+- Her fatura için:
+  - Faturanın düzenlendiği ay
+  - Bir önceki ay (sadece KDV beyanı için)
+- Bu dönemleri firma_bilgileri.docx'teki KDV beyanlarıyla eşleştir
+
+**ADIM 3 - ALT TEDARİKÇİ TABLOSU:**
+- SADECE fatura ayları için firma_bilgileri.docx'ten
+- Her dönem için "En yüksek tutarlı 10 alış faturaları" tablosunu bul
+- Bir önceki ay EKLEME, sadece fatura ayları
+
+**ADIM 4 - MUHTASAR BEYAN:**
+- SADECE fatura ayları için firma_bilgileri.docx'ten
+- "Çalıştırılan İşçi Sayısı" bilgilerini al
+
+**CEVAP YAZISI FORMATI:**
+
+Tarih: [Bugünün tarihi], ISTANBUL
+Sayı: MU-[SİCİL NO]/[YIL] - [SERİ NO]
+İlgi: [bilgi_isteme.docx'teki tarih ve sayı]
+Konu: Bilgi Cevap Verme Yazısı
+
+---
+
+SAYIN [Bilgi Talebinde Bulunan YMM Adı Soyadı]
+Yeminli Mali Müşavir
+[Adres]
+
+---
+
+GİRİŞ PARAGR AFI (ÇOK ÖNEMLİ):
+3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde [YIL] yılı Tam Tasdik işlemi tarafımızdan yapılan [BİLGİ VEREN YMM'NİN MÜKELLEFİ TAM ÜNVAN]'nin mükellefiniz [BİLGİ İSTEYEN YMM'NİN MÜKELLEFİ TAM ÜNVAN] ile ilgili olarak hakkında bilgi talep ettiğiniz [KARŞIT İNCELEMEYE KONU MÜKELLEFİN TAM ÜNVANI] adına düzenlemiş olduğu faturalar ile ilgili döküm, 3568 Sayılı Kanun'a bağlı 27, 29 ve 45 No'lu Tebliğ hükümleri çerçevesinde aşağıdaki şekilde bilgilerinize sunulmuştur.
+
+---
+
+**A- BİLGİ İSTEYEN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİ:**
+
+1. Bilgi İsteyen YMM: (bilgi_isteme.docx'ten TABLO formatında)
+2. Bilgi İsteyen YMM'nin Mükellefi: (TABLO formatında)
+3. Sözleşme Bilgileri: (TABLO formatında)
+
+**B- TEYİT VEREN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİN BİLGİLERİ:**
+
+1. Bilgi Veren YMM: (ymm_bilgileri.docx'ten TABLO formatında)
+2. Bilgi Veren YMM'nin Mükellefi: (firma_bilgileri.docx'ten TABLO formatında)
+3. Tam Tasdik Sözleşme Bilgileri: (TABLO - her yıl için ayrı)
+4. Yasal Defter Onay Bilgileri: (TABLO - her yıl için)
+5. Ortak Bilgileri: (TABLO - hisse çoğunluğuna sahip ortaklar)
+
+6. BİLGİ YAZISINA KONU BELGELER:
+   - Fatura tablosu (Yevmiye/Fiş No sütunu ekle - boş bırak veya "[Muavin kaydından alınacak]")
+
+7. KDV BEYAN BİLGİLERİ:
+   - Fatura ayı + bir önceki ay için KDV beyan tabloları
+
+8. BİLGİ YAZISINA KONU MALLARIN TEDARİK EDİLDİĞİ ALT FİRMALARA İLİŞKİN BİLGİLER:
+   - SADECE fatura ayları için
+   - Her dönem için "En yüksek tutarlı 10 alış faturaları" tablosu
+
+9. İMALATÇI FİRMA BİLGİSİ:
+   Mükellefimiz sağlık hizmetleri sektöründe faaliyet göstermekte olup, imalatçı firma statüsünde değildir. Dolayısıyla sanayi odası sicil kaydı bulunmamaktadır.
+
+10. ÖDEME ŞEKLİ:
+    Karşıt incelemeye konu faturaların bedelleri BANKA TRANSFERI yoluyla ödenmiştir.
+
+11. ÇALIŞTIRILAN İŞÇİ SAYISI VE MUHTASAR BEYAN BİLGİLERİ:
+    - SADECE fatura ayları için
+    - Tablo formatında
+
+**SONUÇ:**
+3568 Sayılı Yeminli Mali Müşavirlik Kanunu ve ilgili tebliğler çerçevesinde tarafınıza sunulan bilgiler, mükellefimiz kayıtlarına ve belgelerine dayanmaktadır. Söz konusu faturalarda yer alan mal veya hizmetlerin alışı ve satışı gerçeği yansıtmakta olup, KDV matrahına dahil edilmiş ve yasal defterlere kaydedilmiştir.
+
+Bilgilerinize saygılarımla arz ederim.
+
+[YMM Adı Soyadı]
+Yeminli Mali Müşavir
+Mühür No: [Mühür No]
+Sicil No: [Sicil No]
+
+**FORMAT KURALLARI:**
+- Font: 9 punto (tablolar 7.5 punto)
+- Sayfa genişliği: 17cm (A4 uyumlu)
+- Tablolarda firma isimlerini kısalt (SANAYİ → SAN., TİCARET → TİC.)
+- Gereksiz ondalıkları kaldır`;
+
+        // Prompt'u göster
+        document.getElementById('promptDisplay').textContent = FULL_PROMPT;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
         function updateCounter(num) {
             const text = document.getElementById('text' + num).value;
-            document.getElementById('counter' + num).textContent = text.length + ' karakter';
+            document.getElementById('counter' + num).textContent = text.length.toLocaleString() + ' karakter';
         }
 
         function checkAllInputs() {
@@ -378,202 +472,89 @@
             const text2 = document.getElementById('text2').value.trim();
             const text3 = document.getElementById('text3').value.trim();
             
-            const allFilled = text1.length > 50 && text2.length > 50 && text3.length > 50;
+            const allFilled = text1.length > 100 && text2.length > 500 && text3.length > 50;
             document.getElementById('generateBtn').disabled = !allFilled;
         }
 
         function clearAll() {
             if (confirm('Tüm girilen veriler silinecek. Emin misiniz?')) {
-                document.getElementById('text1').value = '';
-                document.getElementById('text2').value = '';
-                document.getElementById('text3').value = '';
-                updateCounter(1);
-                updateCounter(2);
-                updateCounter(3);
+                ['text1', 'text2', 'text3'].forEach(id => document.getElementById(id).value = '');
+                [1,2,3].forEach(updateCounter);
                 checkAllInputs();
                 document.getElementById('preview').classList.remove('active');
-                showAlert('Tüm veriler temizlendi.', 'info');
             }
         }
 
-        function showAlert(message, type = 'info') {
+        function showAlert(message) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
+            alertDiv.className = 'alert';
             alertDiv.textContent = message;
-            const alertsContainer = document.getElementById('alerts');
-            alertsContainer.appendChild(alertDiv);
+            document.getElementById('alerts').appendChild(alertDiv);
             setTimeout(() => alertDiv.remove(), 5000);
         }
 
-        async function generateDocument() {
+        async function sendToClaudeAPI() {
             document.getElementById('loading').classList.add('active');
             document.getElementById('preview').classList.remove('active');
 
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const bilgiIsteme = document.getElementById('text1').value;
+                const firmaBilgi = document.getElementById('text2').value;
+                const ymmBilgi = document.getElementById('text3').value;
 
-                const html = generateHTMLContent();
-                document.getElementById('resultContent').innerHTML = html;
+                const fullPrompt = `${FULL_PROMPT}
+
+---
+**DOSYA İÇERİKLERİ:**
+
+**1. bilgi_isteme.docx:**
+${bilgiIsteme}
+
+**2. firma_bilgileri.docx:**
+${firmaBilgi}
+
+**3. ymm_bilgileri.docx:**
+${ymmBilgi}
+
+---
+
+Yukarıdaki PROMPT'a göre TAM ve DETAYLI cevap yazısını HTML formatında oluştur. Tüm bölümleri eksiksiz dahil et.`;
+
+                const response = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 16000,
+                        messages: [
+                            { role: "user", content: fullPrompt }
+                        ],
+                    })
+                });
+
+                const data = await response.json();
                 
-                document.getElementById('loading').classList.remove('active');
-                document.getElementById('preview').classList.add('active');
+                if (data.content && data.content[0] && data.content[0].text) {
+                    let htmlContent = data.content[0].text;
+                    
+                    // HTML tag'lerini temizle
+                    htmlContent = htmlContent.replace(/```html/g, '').replace(/```/g, '');
+                    
+                    document.getElementById('resultContent').innerHTML = htmlContent;
+                    document.getElementById('loading').classList.remove('active');
+                    document.getElementById('preview').classList.add('active');
+                    showAlert('Claude AI cevap yazısını oluşturdu! 🎉');
+                    document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    throw new Error('Claude API yanıt vermedi');
+                }
                 
-                showAlert('Cevap yazısı başarıyla oluşturuldu! 🎉', 'success');
-                
-                document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
             } catch (error) {
                 document.getElementById('loading').classList.remove('active');
-                showAlert('Hata: ' + error.message, 'error');
+                alert('Hata: ' + error.message + '\n\nNot: Claude API bu sayfada çalışmayabilir. Lütfen promptu kopyalayıp doğrudan Claude.ai\'da kullanın.');
             }
-        }
-
-        function parseValue(text, pattern, defaultValue = '[Bulunamadı]') {
-            const match = text.match(pattern);
-            return match ? match[1].trim() : defaultValue;
-        }
-
-        function parseFatura(text) {
-            // Fatura tablosunu bul
-            const faturaRegex = /(\d{2}\.\d{2}\.\d{4})\s+(\w+\d+)\s+(\w+)\s+([\d,.]+)\s+([\d,.]+)/g;
-            const faturalar = [];
-            let match;
-            
-            while ((match = faturaRegex.exec(text)) !== null) {
-                faturalar.push({
-                    tarih: match[1],
-                    no: match[2],
-                    cinsi: match[3],
-                    matrah: match[4],
-                    kdv: match[5]
-                });
-            }
-            
-            return faturalar;
-        }
-
-        function generateHTMLContent() {
-            const bilgiIsteme = document.getElementById('text1').value;
-            const firmaBilgi = document.getElementById('text2').value;
-            const ymmBilgi = document.getElementById('text3').value;
-            
-            const today = new Date();
-            const dateStr = today.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            
-            // Fatura bilgilerini parse et
-            const faturalar = parseFatura(bilgiIsteme);
-            
-            let faturaHTML = '';
-            let toplamMatrah = 0;
-            let toplamKDV = 0;
-            
-            if (faturalar.length > 0) {
-                faturalar.forEach(f => {
-                    const matrah = parseFloat(f.matrah.replace(/\./g, '').replace(',', '.'));
-                    const kdv = parseFloat(f.kdv.replace(/\./g, '').replace(',', '.'));
-                    toplamMatrah += matrah;
-                    toplamKDV += kdv;
-                    
-                    faturaHTML += `
-                        <tr>
-                            <td>${f.tarih}</td>
-                            <td>${f.no}</td>
-                            <td>${f.cinsi}</td>
-                            <td style="text-align: right;">${f.matrah}</td>
-                            <td style="text-align: right;">${f.kdv}</td>
-                            <td>[Muavin kaydından alınacak]</td>
-                        </tr>
-                    `;
-                });
-                
-                faturaHTML += `
-                    <tr>
-                        <td colspan="3"><strong>TOPLAM</strong></td>
-                        <td style="text-align: right;"><strong>${toplamMatrah.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
-                        <td style="text-align: right;"><strong>${toplamKDV.toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
-                        <td style="text-align: right;"><strong>${(toplamMatrah + toplamKDV).toLocaleString('tr-TR', {minimumFractionDigits: 2})}</strong></td>
-                    </tr>
-                `;
-            } else {
-                faturaHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Fatura bilgisi bulunamadı</td></tr>';
-            }
-
-            return `
-                <h1>3568 SAYILI KANUN BİLGİ CEVAP YAZISI</h1>
-                
-                <p><strong>Tarih:</strong> ${dateStr}, İSTANBUL</p>
-                <p><strong>Sayı:</strong> MU-2694/2026-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}</p>
-                <p><strong>İlgi:</strong> ${parseValue(bilgiIsteme, /Sayi\s*[:：]\s*(.+)/i, 'Bilgi talep yazınız')}</p>
-                <p><strong>Konu:</strong> Bilgi Cevap Verme Yazısı</p>
-                
-                <hr>
-                
-                <p><strong>SAYIN</strong></p>
-                <p><strong>${parseValue(bilgiIsteme, /Adi Soyadi\s*[:：]\s*(.+)/i)}</strong></p>
-                <p><strong>Yeminli Mali Müşavir</strong></p>
-                
-                <hr>
-                
-                <p style="margin: 15px 0; text-align: justify;">
-                    3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde 2024 yılı Tam Tasdik işlemi tarafımızdan yapılan 
-                    ${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i, 'Medicana İnşaat Mat. Tek. Tur. Gıda Eği. Ve Sağ. Hiz. Ene. San. Ve Tic. A.Ş.')}'nin 
-                    bilgi cevap yazısı aşağıdaki şekilde sunulmuştur.
-                </p>
-                
-                <hr>
-                
-                <h2>A- BİLGİ İSTEYEN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİ</h2>
-                
-                <h3>1. Bilgi İsteyen Yeminli Mali Müşavirin Bilgileri:</h3>
-                <table>
-                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
-                    <tr><td>Adı Soyadı</td><td>${parseValue(bilgiIsteme, /Adi Soyadi\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Bağlı Olduğu Oda</td><td>${parseValue(bilgiIsteme, /Bağli Olduğu Oda\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Sicil No</td><td>${parseValue(bilgiIsteme, /Sicil No\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Mühür No</td><td>${parseValue(bilgiIsteme, /Mühür No\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(bilgiIsteme, /Vergi Dairesi ve No\s*[:：]\s*(.+)/i)}</td></tr>
-                </table>
-                
-                <h2>B- TEYİT VEREN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİN BİLGİLERİ</h2>
-                
-                <h3>1. Bilgi Veren Yeminli Mali Müşavirin Bilgileri:</h3>
-                <table>
-                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
-                    <tr><td>Adı Soyadı</td><td>${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Bağlı Olduğu Oda</td><td>${parseValue(ymmBilgi, /Bağlı Olduğu Oda\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Sicil No</td><td>${parseValue(ymmBilgi, /Sicil No\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Mühür No</td><td>${parseValue(ymmBilgi, /Mühür No\s*[:：]\s*(.+)/i)}</td></tr>
-                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(ymmBilgi, /Vergi Dairesi ve No\.?su\s*[:：]\s*(.+)/i)}</td></tr>
-                </table>
-                
-                <h3>6. BİLGİ YAZISINA KONU BELGELER:</h3>
-                <table>
-                    <tr>
-                        <th style="width: 12%;">Fatura Tarihi</th>
-                        <th style="width: 22%;">Fatura No</th>
-                        <th style="width: 12%;">Cinsi</th>
-                        <th style="width: 15%;">Matrah (TL)</th>
-                        <th style="width: 13%;">KDV (TL)</th>
-                        <th style="width: 26%;">Yevmiye/Fiş No</th>
-                    </tr>
-                    ${faturaHTML}
-                </table>
-                
-                <hr>
-                
-                <h2>SONUÇ:</h2>
-                <p style="text-align: justify;">
-                    3568 Sayılı Yeminli Mali Müşavirlik Kanunu ve ilgili tebliğler çerçevesinde tarafınıza sunulan bilgiler, 
-                    mükellefimiz kayıtlarına ve belgelerine dayanmaktadır. Söz konusu faturalarda yer alan mal veya hizmetlerin 
-                    alışı ve satışı gerçeği yansıtmakta olup, KDV matrahına dahil edilmiş ve yasal defterlere kaydedilmiştir.
-                </p>
-                
-                <p style="margin-top: 30px; text-align: right;">
-                    <strong>${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i)}</strong><br>
-                    <strong>Yeminli Mali Müşavir</strong><br>
-                    Mühür No: ${parseValue(ymmBilgi, /Mühür No\s*[:：]\s*(.+)/i)}<br>
-                    Sicil No: ${parseValue(ymmBilgi, /Sicil No\s*[:：]\s*(.+)/i)}
-                </p>
-            `;
         }
 
         function copyToWord() {
@@ -584,7 +565,7 @@
             window.getSelection().addRange(range);
             document.execCommand('copy');
             window.getSelection().removeAllRanges();
-            showAlert('İçerik kopyalandı! Word\'e yapıştırabilirsiniz (Cmd+V)', 'success');
+            showAlert('İçerik kopyalandı! Word\'e yapıştırabilirsiniz (Cmd+V)');
         }
 
         function downloadHTML() {
@@ -615,11 +596,7 @@
             a.download = 'cevap_yazisi_' + new Date().toISOString().slice(0,10) + '.html';
             a.click();
             URL.revokeObjectURL(url);
-            showAlert('HTML dosyası indirildi! 📥', 'success');
-        }
-
-        function printDocument() {
-            window.print();
+            showAlert('HTML dosyası indirildi! 📥');
         }
     </script>
 </body>
