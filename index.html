@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3568 Sayılı Kanun - Cevap Yazısı Oluşturucu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -213,6 +214,8 @@
             font-family: 'Times New Roman', Times, serif;
             font-size: 9pt;
             line-height: 1.3;
+            max-width: 17cm;
+            margin: 0 auto;
         }
 
         #resultContent table {
@@ -220,6 +223,7 @@
             border-collapse: collapse;
             margin: 10px 0;
             font-size: 7.5pt;
+            table-layout: fixed;
         }
 
         #resultContent table, #resultContent th, #resultContent td {
@@ -230,10 +234,36 @@
             background-color: #f0f0f0;
             font-weight: bold;
             padding: 3px;
+            word-wrap: break-word;
         }
 
         #resultContent td {
             padding: 3px;
+            word-wrap: break-word;
+        }
+
+        #resultContent h1 {
+            font-size: 11pt;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #resultContent h2 {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        #resultContent h3 {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #resultContent hr {
+            margin: 15px 0;
+            border: none;
+            border-top: 1px solid #000;
         }
     </style>
 </head>
@@ -250,12 +280,12 @@
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">1</span>
-                    Bilgi İsteme Dosyası (bilgi_isteme.docx)
+                    Bilgi İsteme Dosyası
                 </div>
                 <div class="file-upload" onclick="document.getElementById('file1').click()">
-                    <input type="file" id="file1" accept=".docx,.txt" onchange="handleFileSelect(1, this)">
+                    <input type="file" id="file1" accept=".docx" onchange="handleFileSelect(1, this)">
                     <label for="file1">
-                        📁 Dosya Seçin veya Sürükleyin
+                        📁 DOCX Dosya Seçin veya Sürükleyin
                         <div class="file-name" id="fileName1"></div>
                     </label>
                 </div>
@@ -264,12 +294,12 @@
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">2</span>
-                    Firma Bilgileri Dosyası (firma_bilgileri.docx)
+                    Firma Bilgileri Dosyası
                 </div>
                 <div class="file-upload" onclick="document.getElementById('file2').click()">
-                    <input type="file" id="file2" accept=".docx,.txt" onchange="handleFileSelect(2, this)">
+                    <input type="file" id="file2" accept=".docx" onchange="handleFileSelect(2, this)">
                     <label for="file2">
-                        📁 Dosya Seçin veya Sürükleyin
+                        📁 DOCX Dosya Seçin veya Sürükleyin
                         <div class="file-name" id="fileName2"></div>
                     </label>
                 </div>
@@ -278,12 +308,12 @@
             <div class="step">
                 <div class="step-title">
                     <span class="step-number">3</span>
-                    YMM Bilgileri Dosyası (ymm_bilgileri.docx)
+                    YMM Bilgileri Dosyası
                 </div>
                 <div class="file-upload" onclick="document.getElementById('file3').click()">
-                    <input type="file" id="file3" accept=".docx,.txt" onchange="handleFileSelect(3, this)">
+                    <input type="file" id="file3" accept=".docx" onchange="handleFileSelect(3, this)">
                     <label for="file3">
-                        📁 Dosya Seçin veya Sürükleyin
+                        📁 DOCX Dosya Seçin veya Sürükleyin
                         <div class="file-name" id="fileName3"></div>
                     </label>
                 </div>
@@ -297,7 +327,7 @@
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Cevap yazısı oluşturuluyor...</p>
+                <p>Dosyalar okunuyor ve cevap yazısı oluşturuluyor...</p>
             </div>
 
             <div class="preview" id="preview">
@@ -318,23 +348,35 @@
     </div>
 
     <script>
-        let files = {
+        let fileContents = {
             file1: null,
             file2: null,
             file3: null
         };
 
-        function handleFileSelect(fileNum, input) {
+        async function handleFileSelect(fileNum, input) {
             const file = input.files[0];
             if (file) {
-                files['file' + fileNum] = file;
-                document.getElementById('fileName' + fileNum).textContent = '✓ ' + file.name;
-                checkAllFiles();
+                try {
+                    showAlert('Dosya okunuyor: ' + file.name, 'info');
+                    
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+                    
+                    fileContents['file' + fileNum] = result.value;
+                    document.getElementById('fileName' + fileNum).textContent = '✓ ' + file.name;
+                    
+                    showAlert('Dosya başarıyla okundu: ' + file.name, 'success');
+                    checkAllFiles();
+                } catch (error) {
+                    showAlert('Dosya okuma hatası: ' + error.message, 'error');
+                    console.error('Error reading file:', error);
+                }
             }
         }
 
         function checkAllFiles() {
-            const allUploaded = files.file1 && files.file2 && files.file3;
+            const allUploaded = fileContents.file1 && fileContents.file2 && fileContents.file3;
             document.getElementById('generateBtn').disabled = !allUploaded;
         }
 
@@ -342,7 +384,8 @@
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
             alertDiv.textContent = message;
-            document.getElementById('alerts').appendChild(alertDiv);
+            const alertsContainer = document.getElementById('alerts');
+            alertsContainer.appendChild(alertDiv);
             setTimeout(() => alertDiv.remove(), 5000);
         }
 
@@ -351,8 +394,7 @@
             document.getElementById('preview').classList.remove('active');
 
             try {
-                // Simülasyon - Gerçek uygulamada dosyalar parse edilecek
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 1000));
 
                 const html = generateHTMLContent();
                 document.getElementById('resultContent').innerHTML = html;
@@ -362,7 +404,6 @@
                 
                 showAlert('Cevap yazısı başarıyla oluşturuldu! 🎉', 'success');
                 
-                // Önizlemeye scroll
                 document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
             } catch (error) {
                 document.getElementById('loading').classList.remove('active');
@@ -371,43 +412,100 @@
         }
 
         function generateHTMLContent() {
-            // Demo içerik - Gerçek uygulamada dosyalardan parse edilecek
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            
+            // Parse bilgi isteme dosyası
+            const bilgiIsteme = fileContents.file1 || '';
+            const ymmBilgi = fileContents.file3 || '';
+            const firmaBilgi = fileContents.file2 || '';
+            
+            // Basit parse işlemleri
+            const parseValue = (text, pattern) => {
+                const match = text.match(pattern);
+                return match ? match[1].trim() : '[Bulunamadı]';
+            };
+
             return `
-                <div style="max-width: 17cm; margin: 0 auto; font-family: 'Times New Roman', Times, serif; font-size: 9pt;">
-                    <h1 style="text-align: center; font-size: 11pt; margin: 20px 0;">3568 SAYILI KANUN BİLGİ CEVAP YAZISI</h1>
-                    
-                    <p><strong>Tarih:</strong> ${new Date().toLocaleDateString('tr-TR')}, İSTANBUL</p>
-                    <p><strong>Sayı:</strong> MU-2694/2026-002</p>
-                    <p><strong>Konu:</strong> Bilgi Cevap Verme Yazısı</p>
-                    
-                    <hr style="margin: 15px 0;">
-                    
-                    <p style="margin: 15px 0; text-align: justify;">
-                        3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde bilgi cevap yazısı oluşturulmuştur.
-                    </p>
-                    
-                    <h3 style="margin-top: 20px; font-size: 9pt;">Bilgi İsteyen YMM:</h3>
-                    <table>
-                        <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
-                        <tr><td>Adı Soyadı</td><td>[Otomatik Çekilecek]</td></tr>
-                        <tr><td>Sicil No</td><td>[Otomatik Çekilecek]</td></tr>
-                    </table>
-                    
-                    <h3 style="margin-top: 20px; font-size: 9pt;">Fatura Bilgileri:</h3>
-                    <table>
-                        <tr><th>Tarih</th><th>Fatura No</th><th>Matrah</th><th>KDV</th></tr>
-                        <tr><td>[Otomatik]</td><td>[Otomatik]</td><td>[Otomatik]</td><td>[Otomatik]</td></tr>
-                    </table>
-                    
-                    <p style="margin-top: 30px; text-align: justify;">
-                        <strong>NOT:</strong> Bu bir demo önizlemedir. Gerçek uygulamada tüm bilgiler dosyalardan otomatik olarak çekilecektir.
-                    </p>
-                    
-                    <div style="margin-top: 30px; text-align: right;">
-                        <p><strong>[YMM Adı Soyadı]</strong></p>
-                        <p>Yeminli Mali Müşavir</p>
-                    </div>
-                </div>
+                <h1>3568 SAYILI KANUN BİLGİ CEVAP YAZISI</h1>
+                
+                <p><strong>Tarih:</strong> ${dateStr}, İSTANBUL</p>
+                <p><strong>Sayı:</strong> MU-2694/2026-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}</p>
+                <p><strong>İlgi:</strong> Bilgi talep yazınız</p>
+                <p><strong>Konu:</strong> Bilgi Cevap Verme Yazısı</p>
+                
+                <hr>
+                
+                <p style="margin: 15px 0; text-align: justify;">
+                    3568 Sayılı Kanun ve bağlı mevzuat hükümleri çerçevesinde bilgi cevap yazısı oluşturulmuştur.
+                </p>
+                
+                <hr>
+                
+                <h2>A- BİLGİ İSTEYEN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİ</h2>
+                
+                <h3>1. Bilgi İsteyen Yeminli Mali Müşavirin Bilgileri:</h3>
+                <table>
+                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
+                    <tr><td>Adı Soyadı</td><td>${parseValue(bilgiIsteme, /Adi Soyadi\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Bağlı Olduğu Oda</td><td>${parseValue(bilgiIsteme, /Bağli Olduğu Oda\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Sicil No</td><td>${parseValue(bilgiIsteme, /Sicil No\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Mühür No</td><td>${parseValue(bilgiIsteme, /Mühür No\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(bilgiIsteme, /Vergi Dairesi ve No\s*[:：]\s*(.+)/i)}</td></tr>
+                </table>
+                
+                <h3>2. Bilgi İsteyen YMM'nin Mükellefi:</h3>
+                <table>
+                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
+                    <tr><td>Ünvanı</td><td>${parseValue(bilgiIsteme, /Adi Soyadi\/Ünvani\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Adresi</td><td>${parseValue(bilgiIsteme, /Adresi\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Vergi Dairesi ve No</td><td>${parseValue(bilgiIsteme, /ATISALANI|Atisalani.*\d{3}\s\d{3}\s\d{4}/i)}</td></tr>
+                </table>
+                
+                <hr>
+                
+                <h2>B- TEYİT VEREN YEMİNLİ MALİ MÜŞAVİR VE MÜKELLEFİN BİLGİLERİ</h2>
+                
+                <h3>1. Bilgi Veren Yeminli Mali Müşavirin Bilgileri:</h3>
+                <table>
+                    <tr><th style="width: 40%;">Bilgi</th><th>Detay</th></tr>
+                    <tr><td>Adı Soyadı</td><td>${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Bağlı Olduğu Oda</td><td>${parseValue(ymmBilgi, /Bağlı Olduğu Oda\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Sicil No</td><td>${parseValue(ymmBilgi, /Sicil No\s*[:：]\s*(.+)/i)}</td></tr>
+                    <tr><td>Mühür No</td><td>${parseValue(ymmBilgi, /Mühür No\s*[:：]\s*(.+)/i)}</td></tr>
+                </table>
+                
+                <h3>6. BİLGİ YAZISINA KONU BELGELER:</h3>
+                <p>Bilgi yazısına konu faturalar:</p>
+                <table>
+                    <tr>
+                        <th>Fatura Tarihi</th>
+                        <th>Fatura No</th>
+                        <th>Cinsi</th>
+                        <th>Matrah (TL)</th>
+                        <th>KDV (TL)</th>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px;">
+                            Dosyalardan otomatik çekilecek
+                        </td>
+                    </tr>
+                </table>
+                
+                <hr>
+                
+                <h2>SONUÇ:</h2>
+                <p style="text-align: justify;">
+                    3568 Sayılı Yeminli Mali Müşavirlik Kanunu ve ilgili tebliğler çerçevesinde tarafınıza sunulan bilgiler, 
+                    mükellefimiz kayıtlarına ve belgelerine dayanmaktadır.
+                </p>
+                
+                <p style="margin-top: 30px; text-align: right;">
+                    <strong>${parseValue(ymmBilgi, /Adı Soyadı\s*[:：]\s*(.+)/i)}</strong><br>
+                    <strong>Yeminli Mali Müşavir</strong><br>
+                    Mühür No: ${parseValue(ymmBilgi, /Mühür No\s*[:：]\s*(.+)/i)}<br>
+                    Sicil No: ${parseValue(ymmBilgi, /Sicil No\s*[:：]\s*(.+)/i)}
+                </p>
             `;
         }
 
@@ -419,30 +517,29 @@
             window.getSelection().addRange(range);
             document.execCommand('copy');
             window.getSelection().removeAllRanges();
-            showAlert('İçerik kopyalandı! Word\'e yapıştırabilirsiniz (Ctrl+V)', 'success');
+            showAlert('İçerik kopyalandı! Word\'e yapıştırabilirsiniz (Cmd+V)', 'success');
         }
 
         function downloadHTML() {
             const content = document.getElementById('resultContent').innerHTML;
-            const fullHTML = `
-<!DOCTYPE html>
+            const fullHTML = `<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <title>Cevap Yazısı</title>
     <style>
         body { font-family: 'Times New Roman', Times, serif; font-size: 9pt; max-width: 17cm; margin: 0 auto; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 7.5pt; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 7.5pt; table-layout: fixed; }
         table, th, td { border: 1px solid #000; }
-        th { background-color: #f0f0f0; padding: 3px; }
-        td { padding: 3px; }
+        th { background-color: #f0f0f0; padding: 3px; word-wrap: break-word; }
+        td { padding: 3px; word-wrap: break-word; }
+        h1 { font-size: 11pt; text-align: center; }
+        h2, h3 { font-size: 9pt; }
+        hr { margin: 15px 0; border: none; border-top: 1px solid #000; }
     </style>
 </head>
-<body>
-${content}
-</body>
-</html>
-            `;
+<body>${content}</body>
+</html>`;
             
             const blob = new Blob([fullHTML], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -455,46 +552,8 @@ ${content}
         }
 
         function printDocument() {
-            const content = document.getElementById('resultContent').innerHTML;
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Yazdır</title>
-                    <style>
-                        body { font-family: 'Times New Roman', Times, serif; font-size: 9pt; }
-                        table { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
-                        table, th, td { border: 1px solid #000; }
-                        th { background-color: #f0f0f0; padding: 3px; }
-                        td { padding: 3px; }
-                    </style>
-                </head>
-                <body>${content}</body>
-                </html>
-            `);
-            printWindow.document.close();
-            printWindow.print();
+            window.print();
         }
-
-        // Drag and drop support
-        document.querySelectorAll('.file-upload').forEach((div, index) => {
-            div.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                div.style.background = '#f8f9ff';
-            });
-            
-            div.addEventListener('dragleave', () => {
-                div.style.background = '';
-            });
-            
-            div.addEventListener('drop', (e) => {
-                e.preventDefault();
-                div.style.background = '';
-                const fileInput = document.getElementById('file' + (index + 1));
-                fileInput.files = e.dataTransfer.files;
-                handleFileSelect(index + 1, fileInput);
-            });
-        });
     </script>
 </body>
 </html>
